@@ -22,6 +22,12 @@ config_test:
 		make configure && touch config_done; \
 	fi )
 
+# uClibc's <sys/random.h> is unusable here: it uses size_t without including
+# <stddef.h>, so gnulib's generated lib/sys/random.h fails with
+# "unknown type name 'size_t'", and it declares getrandom() as returning int
+# while this libc does not provide the function at all (configure reports
+# "checking for getrandom... no").  Ignore both so that gnulib declares and
+# implements getrandom() itself, reading from /dev/urandom.
 configure:
 	( cd $(SRC_NAME) ; \
 	./configure \
@@ -31,7 +37,9 @@ configure:
 		--disable-nls \
 		PKG_CONFIG_LIBDIR="$(STAGEDIR)/lib/pkgconfig/" \
 		--host=$(HOST_TARGET) \
-		--build=$(HOST_BUILD) ; \
+		--build=$(HOST_BUILD) \
+		ac_cv_header_sys_random_h=no \
+		ac_cv_func_getrandom=no ; \
 	)
 
 clean:
