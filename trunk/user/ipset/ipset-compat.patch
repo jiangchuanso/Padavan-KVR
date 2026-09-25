@@ -36,3 +36,21 @@ diff -urN a/kernel/net/netfilter/ipset/ip_set_hash_gen.h b/kernel/net/netfilter/
  
  /* Hashing which uses arrays to resolve clashing. The hash table is resized
   * (doubled) when searching becomes too long.
+diff -urN a/kernel/include/linux/netfilter/ipset/ip_set_compat.h.in b/kernel/include/linux/netfilter/ipset/ip_set_compat.h.in
+--- a/kernel/include/linux/netfilter/ipset/ip_set_compat.h.in	2020-06-26 00:30:16.000000000 +0300
++++ b/kernel/include/linux/netfilter/ipset/ip_set_compat.h.in	2026-09-25 00:00:00.000000000 +0300
+@@ -438,3 +438,14 @@
+ #ifndef HAVE_NFNL_MSG_PUT
++/* nfnl_lock()/nfnl_unlock() are defined above as no-argument wrappers for
++ * kernels whose nfnetlink has no subsys argument.  Left in place they rewrite
++ * the nfnl_lock(void)/nfnl_unlock(void) prototypes in nfnetlink.h into
++ * non-prototypes, which the kernel build rejects with
++ * -Werror=strict-prototypes.  Drop them for the duration of the include. */
++#undef nfnl_lock
++#undef nfnl_unlock
+ #include <linux/netfilter/nfnetlink.h>
++#ifndef HAVE_NFNL_LOCK_SUBSYS
++#define nfnl_lock(x)		nfnl_lock()
++#define nfnl_unlock(x)		nfnl_unlock()
++#endif
+ static inline void nfnl_fill_hdr(struct nlmsghdr *nlh, u8 family, u8 version,
