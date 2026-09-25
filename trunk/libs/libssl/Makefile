@@ -31,7 +31,7 @@ OPENSSL_OPTIONS += no-ec
 endif
 
 #all: download_test extract_test config_test
-all: config_test
+all: extract_test config_test
 	$(MAKE) -j$(HOST_NCPU) -C $(SRC_NAME)
 
 download_test:

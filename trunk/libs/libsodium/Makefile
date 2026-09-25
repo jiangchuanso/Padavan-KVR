@@ -12,6 +12,7 @@ download_test:
 extract_test:
 	( if [ ! -d $(SRC_NAME) ]; then \
 		tar xf $(SRC_NAME).tar.gz ; \
+		if [ -d libsodium-stable ]; then mv libsodium-stable $(SRC_NAME); fi ; \
 	fi )
 
 config_test:
