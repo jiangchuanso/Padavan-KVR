@@ -3,8 +3,13 @@ SRC_NAME=nfs-utils-2.6.2
 CFLAGS += -ffunction-sections -fdata-sections -fvisibility=hidden
 LDFLAGS += -Wl,--gc-sections
 
-all: config_test
+all: extract_test config_test
 	$(MAKE) -j$(HOST_NCPU) -C $(SRC_NAME)
+
+extract_test:
+	( if [ ! -d $(SRC_NAME) ]; then \
+		tar -xf $(SRC_NAME).tar.xz; \
+	fi )
 
 config_test:
 	( if [ -f ./config_done ]; then \
